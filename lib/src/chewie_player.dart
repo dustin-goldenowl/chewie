@@ -33,6 +33,7 @@ class Chewie extends StatefulWidget {
 
   @override
   ChewieState createState() {
+    print('object');
     return ChewieState();
   }
 }
