@@ -24,12 +24,17 @@ typedef ChewieRoutePageBuilder = Widget Function(
 /// `video_player` is pretty low level. Chewie wraps it in a friendly skin to
 /// make it easy to use!
 class Chewie extends StatefulWidget {
-  const Chewie({Key? key, required this.controller, this.parentContext})
-      : super(key: key);
+  const Chewie({
+    Key? key,
+    required this.controller,
+    this.parentContext,
+    this.exitFullScreen,
+  }) : super(key: key);
 
   /// The [ChewieController]
   final ChewieController controller;
   final BuildContext? parentContext;
+  final VoidCallback? exitFullScreen;
 
   @override
   ChewieState createState() {
@@ -72,10 +77,15 @@ class ChewieState extends State<Chewie> {
       _isFullScreen = isControllerFullScreen;
       await _pushFullScreenWidget(context);
     } else if (_isFullScreen) {
-      Navigator.of(
-        widget.parentContext ?? context,
-        rootNavigator: widget.controller.useRootNavigator,
-      ).pop();
+      if (widget.exitFullScreen != null) {
+        widget.exitFullScreen!();
+      } else {
+        Navigator.of(
+          widget.parentContext ?? context,
+          rootNavigator: widget.controller.useRootNavigator,
+        ).pop();
+      }
+
       _isFullScreen = false;
     }
   }
